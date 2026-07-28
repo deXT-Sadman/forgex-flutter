@@ -121,7 +121,7 @@ The color palette is an analogous + accent scheme: indigo (primary, focused/prod
 
 ## 📌 Roadmap / Next Steps
 
-- [ ] Deploy a real Node.js/Express + MongoDB backend
+- [x] Deploy a real Node.js/Express + MongoDB backend
 - [ ] `connectivity_plus` for automatic reconnect-triggered syncing
 - [ ] Real image upload (S3/Cloudinary) instead of local-only profile pictures
 - [ ] Push notifications for due-date reminders
