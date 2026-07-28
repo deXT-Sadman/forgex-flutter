@@ -1,16 +1,15 @@
-/// Central place to configure your backend.
-///
-/// Flutter apps cannot talk to MongoDB directly (there is no safe client-side
-/// driver) — you need a small REST API in front of it (e.g. Node.js +
-/// Express + Mongoose). Point this at that API's base URL.
 class ApiConfig {
-  // TODO: replace with your deployed API base URL.
-  static const String baseUrl = 'https://your-api-domain.com/api';
+  // TODO: replace with wherever your friend's backend is actually running —
+  // see "How to actually connect" below for the right value depending on
+  // emulator / physical device / deployed server.
+  static const String baseUrl = 'http://10.0.2.2:3000/api';
 
   static const String loginEndpoint = '$baseUrl/auth/login';
   static const String signupEndpoint = '$baseUrl/auth/signup';
-  static const String forgotPasswordEndpoint = '$baseUrl/auth/forgot-password';
-  static const String updateProfileEndpoint = '$baseUrl/users/me';
+  static const String forgotPasswordEndpoint =
+      '$baseUrl/auth/forget-password'; // 👈 matches backend spelling
+  static const String updateProfileEndpoint =
+      '$baseUrl/users/me'; // 👈 no userId suffix now
 
   static const String tasksEndpoint = '$baseUrl/tasks';
 
