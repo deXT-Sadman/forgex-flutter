@@ -4,8 +4,6 @@ import 'package:http/http.dart' as http;
 import '../models/task_model.dart';
 import '../utils/constants.dart';
 
-/// Raised whenever a task API call fails so callers can distinguish
-/// "no internet" from "server rejected the request".
 class TaskServiceException implements Exception {
   final String message;
   final bool isOffline;
@@ -14,14 +12,20 @@ class TaskServiceException implements Exception {
   String toString() => message;
 }
 
-/// All CRUD operations against the MongoDB-backed REST API for tasks.
-/// TaskProvider decides what to do when these throw (fall back to the
-/// SharedPreferences cache).
 class TaskService {
   Map<String, String> _headers(String token) => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',
   };
+
+  Map<String, dynamic> _decode(String body) {
+    if (body.isEmpty) return {};
+    try {
+      return jsonDecode(body) as Map<String, dynamic>;
+    } catch (_) {
+      return {};
+    }
+  }
 
   Future<List<TaskModel>> fetchTasks({required String token}) async {
     try {
@@ -30,7 +34,11 @@ class TaskService {
           .timeout(ApiConfig.requestTimeout);
 
       if (response.statusCode == 200) {
-        final List decoded = jsonDecode(response.body);
+        final body = _decode(response.body);
+        final data = body['data'] ?? body;
+        final List decoded =
+            data['tasks'] ??
+            []; // 👈 backend returns { data: { tasks: [...] } }
         return decoded
             .map((e) => TaskModel.fromJson(Map<String, dynamic>.from(e)))
             .toList();
@@ -61,7 +69,11 @@ class TaskService {
           .timeout(ApiConfig.requestTimeout);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return TaskModel.fromJson(jsonDecode(response.body));
+        final body = _decode(response.body);
+        final data = body['data'] ?? body;
+        return TaskModel.fromJson(
+          Map<String, dynamic>.from(data['task'] ?? data),
+        );
       }
       throw TaskServiceException('Could not create the task.');
     } on SocketException {
@@ -87,7 +99,11 @@ class TaskService {
           .timeout(ApiConfig.requestTimeout);
 
       if (response.statusCode == 200) {
-        return TaskModel.fromJson(jsonDecode(response.body));
+        final body = _decode(response.body);
+        final data = body['data'] ?? body;
+        return TaskModel.fromJson(
+          Map<String, dynamic>.from(data['task'] ?? data),
+        );
       }
       throw TaskServiceException('Could not update the task.');
     } on SocketException {
