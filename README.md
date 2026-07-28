@@ -1,4 +1,4 @@
-# ForgeX Task Manager App 📝
+# ForgeX Task Manager App (CLIENT SIDE)📝
 
 A modern, offline-first To-Do app built with Flutter — featuring authentication, a MongoDB-backed REST API layer, full task CRUD, light/dark theming, and profile management.
 
